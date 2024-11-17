@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  password      String
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  items         Item[]    @relation("UserItems")
+  bids          Bid[]
+  watchlist     Item[]    @relation("UserWatchlist")
+}
+
+model Item {
+  id          String    @id @default(cuid())
+  title       String
+  description String
+  images      String[]
+  startPrice  Float
+  currentBid  Float?
+  endTime     DateTime
+  category    String
+  status      String    @default("active") // active, sold, expired
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  sellerId    String
+  seller      User      @relation("UserItems", fields: [sellerId], references: [id])
+  bids        Bid[]
+  watchers    User[]    @relation("UserWatchlist")
+}
+
+model Bid {
+  id        String   @id @default(cuid())
+  amount    Float
+  createdAt DateTime @default(now())
+  itemId    String
+  item      Item     @relation(fields: [itemId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+}
