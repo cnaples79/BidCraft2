@@ -25,7 +25,6 @@ model Item {
   id          String    @id @default(cuid())
   title       String
   description String
-  images      String[]
   startPrice  Float
   currentBid  Float?
   endTime     DateTime
@@ -37,6 +36,14 @@ model Item {
   seller      User      @relation("UserItems", fields: [sellerId], references: [id])
   bids        Bid[]
   watchers    User[]    @relation("UserWatchlist")
+  images      Image[]   // Relation to the Image model
+}
+
+model Image {
+  id       String @id @default(cuid())
+  url      String
+  itemId   String
+  item     Item   @relation(fields: [itemId], references: [id])
 }
 
 model Bid {
