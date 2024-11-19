@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { AuctionGrid } from "@/components/auction-grid";
 
+export const dynamic = "force-dynamic";
+
 export default async function AuctionsPage() {
   const items = await prisma.item.findMany({
     where: { status: "active" },
